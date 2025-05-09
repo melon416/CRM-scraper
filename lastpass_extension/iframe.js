@@ -1,0 +1,2 @@
+bg=parent.bg,LPPlatform=parent.LPPlatform,goTo=function(e){if(0===e.indexOf(bg.get("base_url"))){var t=document.createElement("iframe");t.src=e,document.body.appendChild(t),LPPlatform.addEventListener(t,"load",function(){t.setAttribute("class","loaded"),parent.Topics.get(parent.Topics.DIALOG_LOADED).publish()})}},LPPlatform.addEventListener(window,"message",function(e){0===(e.origin+"/").indexOf(bg.get("base_url"))&&processAcctsIframeMessage(e)});
+//# sourceMappingURL=sourcemaps/iframe.js.map

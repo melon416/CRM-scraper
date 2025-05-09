@@ -1,17 +1,30 @@
 import asyncio
 from playwright.async_api import async_playwright
 import csv
+import os
+from pathlib import Path
+
+EXTENSION_PATH = str(Path("lastpass_extension").resolve())  # Your extracted extension folder
 
 async def run():
     async with async_playwright() as p:
-        # Open Chrome in non-headless mode
-        browser = await p.chromium.launch(headless=False, channel="chrome")
-        context = await browser.new_context()
-        page = await context.new_page()
+        # Launch Chrome with extension
+        user_data_dir = os.path.abspath("chrome_user_data")  # Store profile in project folder
+        browser = await p.chromium.launch_persistent_context(
+            user_data_dir=user_data_dir,
+            headless=False,
+            channel="chrome",
+            args=[
+                f"--disable-extensions-except={EXTENSION_PATH}",
+                f"--load-extension={EXTENSION_PATH}"
+            ]
+        )
 
-        print("Open the login page, login manually, then press Enter here...")
-        await page.goto("about:blank")  # Start with a blank page
-        input("After login and navigation to the profile page, press Enter to scrape...")
+        page = await browser.new_page()
+        await page.goto("about:blank")
+
+        print("🧩 Please log in with LastPass in the opened browser.")
+        input("⏳ After logging in and reaching the profile page, press Enter to scrape...")
 
         # Scraping individual elements
         def safe_text(selector):
